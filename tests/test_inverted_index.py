@@ -33,14 +33,14 @@ def test_search_multiple_words_returns_intersection() -> None:
     index = InvertedIndex()
     index.build(
         {
-            0: "ректор СПбГУ university",
-            1: "ректор МГУ university",
-            2: "ректор СПбГУ МГУ",
+            0: "Ректор СПбГУ university",
+            1: "Ректор МГУ university",
+            2: "Ректор СПбГУ МГУ",
         }
     )
 
-    assert index.search("ректор СПбГУ") == [0, 2]
-    assert index.search("ректор university") == [0, 1]
+    assert index.search("Ректор СПбГУ") == [0, 2]
+    assert index.search("Ректор university") == [0, 1]
 
 
 def test_search_returns_empty_result() -> None:

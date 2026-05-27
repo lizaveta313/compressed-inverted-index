@@ -20,6 +20,10 @@ def gamma_encode_number(n: int) -> str:
 
 def gamma_decode_number(bits: str, start: int = 0) -> tuple[int, int]:
     _ensure_bit_string(bits)
+    return _gamma_decode_number_unchecked(bits, start)
+
+
+def _gamma_decode_number_unchecked(bits: str, start: int = 0) -> tuple[int, int]:
     if not isinstance(start, int):
         raise TypeError("start must be an integer")
     if start < 0 or start >= len(bits):
@@ -49,6 +53,6 @@ def gamma_decode_list(bits: str) -> list[int]:
     numbers: list[int] = []
     position = 0
     while position < len(bits):
-        number, position = gamma_decode_number(bits, position)
+        number, position = _gamma_decode_number_unchecked(bits, position)
         numbers.append(number)
     return numbers

@@ -27,20 +27,20 @@ def test_compressed_index_builds_and_decodes_postings() -> None:
     index = CompressedInvertedIndex()
     index.build(
         {
-            0: "ректор СПбГУ",
-            1: "ректор МГУ",
-            3: "ректор СПбГУ university",
+            0: "Ректор СПбГУ",
+            1: "Ректор МГУ",
+            3: "Ректор СПбГУ university",
         }
     )
 
-    assert index.get_postings("ректор") == [0, 1, 3]
+    assert index.get_postings("Ректор") == [0, 1, 3]
     assert index.get_postings("СПбГУ") == [0, 3]
 
 
 def test_compressed_index_search_matches_plain_index() -> None:
     documents = {
-        0: "ректор СПбГУ university rector",
-        1: "ректор МГУ",
+        0: "Ректор СПбГУ university rector",
+        1: "Ректор МГУ",
         2: "СПбГУ research",
         3: "university rector index",
     }
@@ -50,7 +50,7 @@ def test_compressed_index_search_matches_plain_index() -> None:
     plain.build(documents)
     compressed.build(documents)
 
-    for query in ["ректор", "ректор СПбГУ", "university rector", "missing"]:
+    for query in ["Ректор", "Ректор СПбГУ", "university rector", "missing"]:
         assert compressed.search(query) == plain.search(query)
 
 

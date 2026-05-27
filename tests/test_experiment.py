@@ -6,8 +6,8 @@ def test_generate_documents_is_reproducible_and_bilingual() -> None:
     second = generate_documents(30, seed=123)
 
     assert first == second
-    assert any("ректор СПбГУ" in text for text in first.values())
-    assert any("ректор МГУ" in text for text in first.values())
+    assert any("Ректор СПбГУ" in text for text in first.values())
+    assert any("Ректор МГУ" in text for text in first.values())
     assert any("university rector" in text for text in first.values())
 
 
@@ -19,7 +19,7 @@ def test_run_experiment_returns_expected_metrics() -> None:
     assert results["storage_size_bytes"]["compressed"] > 0
     assert results["compression_ratio"] > 0
 
-    for query in ["ректор СПбГУ", "ректор МГУ", "university rector"]:
+    for query in ["Ректор СПбГУ", "Ректор МГУ", "university rector"]:
         metrics = results["search"][query]
         assert metrics["uncompressed_time_seconds"] >= 0
         assert metrics["compressed_time_seconds"] >= 0

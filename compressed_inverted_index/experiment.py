@@ -1,72 +1,20 @@
 from __future__ import annotations
 
-import random
 import time
 from collections.abc import Callable
 from typing import Any
 
 from compressed_inverted_index.compressed_index import CompressedInvertedIndex
+from compressed_inverted_index.data_loader import generate_documents
 from compressed_inverted_index.inverted_index import InvertedIndex
 
-QUERIES = ("ректор СПбГУ", "ректор МГУ", "university rector")
-
-
-def generate_documents(count: int, seed: int = 42) -> dict[int, str]:
-    """Создает воспроизводимый набор документов для эксперимента."""
-
-    if count < 0:
-        raise ValueError("count must be non-negative")
-
-    rng = random.Random(seed)
-    vocabulary = [
-        "университет",
-        "наука",
-        "студент",
-        "факультет",
-        "библиотека",
-        "кампус",
-        "лекция",
-        "исследование",
-        "данные",
-        "алгоритм",
-        "поиск",
-        "индекс",
-        "education",
-        "science",
-        "student",
-        "faculty",
-        "library",
-        "campus",
-        "lecture",
-        "research",
-        "data",
-        "algorithm",
-        "search",
-        "index",
-        "university",
-        "rector",
-    ]
-
-    documents: dict[int, str] = {}
-    for doc_id in range(count):
-        length = rng.randint(8, 16)
-        words = [rng.choice(vocabulary) for _ in range(length)]
-        text = " ".join(words)
-
-        phrases: list[str] = []
-        if doc_id % 10 == 0:
-            phrases.append("ректор СПбГУ")
-        if doc_id % 15 == 0:
-            phrases.append("ректор МГУ")
-        if doc_id % 7 == 0:
-            phrases.append("university rector")
-
-        if phrases:
-            text = f"{text}. {' '.join(phrases)}"
-
-        documents[doc_id] = text
-
-    return documents
+QUERIES = (
+    "Ректор СПбГУ",
+    "Ректор МГУ",
+    "ректор университет",
+    "university rector",
+    "студент университет",
+)
 
 
 def _measure_search(
@@ -122,7 +70,7 @@ def run_experiment(document_count: int = 1000) -> dict[str, Any]:
             "uncompressed": plain_size,
             "compressed": compressed_size,
         },
-        "compression_ratio": compressed_index.compression_ratio(plain_size),
+        "compression_ratio": compressed_size / plain_size,
         "search": search_results,
     }
 
@@ -140,7 +88,7 @@ def main() -> None:
     print("Размер хранения:")
     print(f"  обычный индекс: {storage_size['uncompressed']} байт")
     print(f"  сжатый индекс: {storage_size['compressed']} байт")
-    print(f"  отношение размеров: {results['compression_ratio']:.3f}")
+    print(f"  compression ratio: {results['compression_ratio']:.3f}")
     print("Проверка поиска:")
 
     for query, metrics in results["search"].items():
