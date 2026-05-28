@@ -216,30 +216,6 @@ def generate_markdown_report(
     used_sizes = ", ".join(str(row["document_count"]) for row in rows) or "нет данных"
     requested = ", ".join(str(size) for size in requested_sizes)
     all_equal = all(row["search_results_equal"] for row in rows)
-    largest = rows[-1] if rows else None
-
-    if largest:
-        summary = "\n".join(
-            [
-                f"- Тестировались объемы: {used_sizes} документов.",
-                f"- Максимальный проверенный объем: {largest['document_count']} документов.",
-                f"- На максимальном объеме размер уменьшился на {largest['memory_saving_percent']:.2f}%.",
-                (
-                    "- Построение сжатого индекса заняло "
-                    f"{largest['build_time_compressed_sec']:.6f} с, обычного - "
-                    f"{largest['build_time_uncompressed_sec']:.6f} с."
-                ),
-                (
-                    "- Средний поиск в сжатом индексе занял "
-                    f"{largest['avg_search_time_compressed_sec']:.8f} с, в обычном - "
-                    f"{largest['avg_search_time_uncompressed_sec']:.8f} с."
-                ),
-                f"- Результаты поиска {'совпали' if all_equal else 'не совпали'} для проверенных запросов.",
-            ]
-        )
-    else:
-        summary = "- Данные для тестирования не были загружены."
-
     report = f"""# Отчёт по экспериментальному тестированию
 
 ## Цель
@@ -276,10 +252,6 @@ def generate_markdown_report(
 ## Вывод
 
 Инвертированный индекс реализован. Сжатие на основе дельт и гамма-кода Элиаса работает. Объём хранения уменьшается. Поиск по «Ректор СПбГУ» и «Ректор МГУ» работает. Проект соответствует заданию третьего модуля.
-
-## Кратко для презентации
-
-{summary}
 """
     path.write_text(report, encoding="utf-8")
 
